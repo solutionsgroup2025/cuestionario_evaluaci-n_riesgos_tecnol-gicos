@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario de Evaluación de Riesgos Tecnológicos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- jsPDF and html2pdf.js CDN for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .form-section-title {
+            @apply text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-300;
+        }
+        .form-label {
+            @apply block text-gray-700 text-sm font-medium mb-2;
+        }
+        .form-input, .form-textarea, .form-select {
+            @apply shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out;
+        }
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-group {
+            @apply mb-6;
+        }
+        .form-button {
+            @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out;
+        }
+        /* Styles for PDF content (can be more detailed if needed) */
+        .pdf-content-wrapper {
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            color: #333;
+        }
+        .pdf-section-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .pdf-question {
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        .pdf-answer {
+            margin-left: 15px;
+            margin-bottom: 5px;
+        }
+        .pdf-header, .pdf-footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .pdf-logo {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8 lg:p-10">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 md:p-10 rounded-xl shadow-lg">
+        <!-- Logo de Solutions Group -->
+        <div class="text-center mb-8">
+            <img src="Solutions Group Logo.png-a998346b-5d9f-43db-975e-fdd33b30090f" alt="Solutions Group Logo" class="max-w-xs mx-auto mb-4 rounded-lg">
+            <h1 class="text-3xl font-bold text-gray-900">Cuestionario de Evaluación de Riesgos Tecnológicos</h1>
+        </div>
+        <p class="text-gray-600 text-center mb-10">
+            Para preparar una propuesta de valor que se ajuste perfectamente a las necesidades de su cooperativa, le agradeceríamos que nos proporcionara la siguiente información. Esto nos ayudará a comprender mejor su contexto y a diseñar una solución a medida.
+        </p>
+
+        <form id="riskAssessmentForm" onsubmit="handleSubmit(event)">
+
+            <!-- Sección 1: Información General de la Cooperativa -->
+            <section class="mb-10 p-6 bg-gray-50 rounded-lg shadow-inner">
+                <h2 class="form-section-title">Sección 1: Información General de la Cooperativa</h2>
+
+                <div class="form-group">
+                    <label for="coopName" class="form-label">1. Nombre de la Cooperativa:</label>
+                    <input type="text" id="coopName" name="coopName" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="coopType" class="form-label">2. Tipo de Cooperativa:</label>
+                    <input type="text" id="coopType" name="coopType" class="form-input" placeholder="Ej. Ahorro y Crédito, Servicios Múltiples, Consumo, etc." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="numMembers" class="form-label">3. Número aproximado de miembros/asociados:</label>
+                    <input type="number" id="numMembers" name="numMembers" class="form-input" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="numEmployees" class="form-label">4. Número aproximado de empleados:</label>
+                    <input type="number" id="numEmployees" name="numEmployees" class="form-input" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="numBranches" class="form-label">5. Número de sucursales/oficinas:</label>
+                    <input type="number" id="numBranches" name="numBranches" class="form-input" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="mainServices" class="form-label">6. Principales servicios que ofrece la cooperativa:</label>
+                    <textarea id="mainServices" name="mainServices" class="form-textarea" placeholder="Ej. Préstamos, ahorros, banca en línea, seguros, etc." required></textarea>
+                </div>
+
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 mt-8">7. Persona de Contacto Principal para la Auditoría:</h3>
+                <div class="form-group">
+                    <label for="contactName" class="form-label">Nombre:</label>
+                    <input type="text" id="contactName" name="contactName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactRole" class="form-label">Cargo:</label>
+                    <input type="text" id="contactRole" name="contactRole" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail" class="form-label">Correo Electrónico:</label>
+                    <input type="email" id="contactEmail" name="contactEmail" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactPhone" class="form-label">Teléfono:</label>
+                    <input type="tel" id="contactPhone" name="contactPhone" class="form-input" required>
+                </div>
+            </section>
+
+            <!-- Sección 2: Infraestructura y Sistemas Tecnológicos -->
+            <section class="mb-10 p-6 bg-gray-50 rounded-lg shadow-inner">
+                <h2 class="form-section-title">Sección 2: Infraestructura y Sistemas Tecnológicos</h2>
+
+                <div class="form-group">
+                    <label for="techInfra" class="form-label">1. Describa brevemente su infraestructura tecnológica actual:</label>
+                    <textarea id="techInfra" name="techInfra" class="form-textarea" placeholder="Ej. Servidores locales, servicios en la nube, combinación híbrida, etc." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="criticalSystems" class="form-label">2. Liste los sistemas y aplicaciones críticos para las operaciones de la cooperativa:</label>
+                    <textarea id="criticalSystems" name="criticalSystems" class="form-textarea" placeholder="Ej. Core bancario/financiero, sistema contable, CRM, portal de miembros, etc." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="thirdPartyServices" class="form-label">3. ¿Utilizan servicios de terceros para alguna de sus operaciones tecnológicas? Si es así, por favor, mencione los principales.</label>
+                    <textarea id="thirdPartyServices" name="thirdPartyServices" class="form-textarea" placeholder="Ej. Proveedores de software, servicios de hosting, servicios de ciberseguridad, etc."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="digitalizationLevel" class="form-label">4. ¿Cuál es el nivel de digitalización de sus operaciones?</label>
+                    <select id="digitalizationLevel" name="digitalizationLevel" class="form-select" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="Bajo">Bajo</option>
+                        <option value="Medio">Medio</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Totalmente Digitalizado">Totalmente Digitalizado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="internalITTeam" class="form-label">5. ¿Disponen de un equipo de TI interno? En caso afirmativo, ¿cuántas personas lo conforman y cuáles son sus principales responsabilidades?</label>
+                    <textarea id="internalITTeam" name="internalITTeam" class="form-textarea" placeholder="Ej. Sí, 5 personas, responsables de infraestructura y soporte. / No."></textarea>
+                </div>
+            </section>
+
+            <!-- Sección 3: Gestión de Riesgos y Ciberseguridad Actual -->
+            <section class="mb-10 p-6 bg-gray-50 rounded-lg shadow-inner">
+                <h2 class="form-section-title">Sección 3: Gestión de Riesgos y Ciberseguridad Actual</h2>
+
+                <div class="form-group">
+                    <label for="riskManagementFramework" class="form-label">1. ¿La cooperativa cuenta actualmente con un marco o programa de gestión de riesgos tecnológicos o ciberseguridad? Si es así, ¿cuál?</label>
+                    <textarea id="riskManagementFramework" name="riskManagementFramework" class="form-textarea" placeholder="Ej. ISO 27001, COBIT, NIST, marco propio, etc."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastAudit" class="form-label">2. ¿Cuándo fue la última vez que se realizó una auditoría o evaluación de riesgos tecnológicos? ¿Cuáles fueron los principales hallazgos o recomendaciones?</label>
+                    <textarea id="lastAudit" name="lastAudit" class="form-textarea"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="mainConcerns" class="form-label">3. ¿Cuáles considera que son las principales preocupaciones o desafíos en materia de riesgos tecnológicos para su cooperativa en este momento?</label>
+                    <textarea id="mainConcerns" name="mainConcerns" class="form-textarea" placeholder="Ej. Ciberataques, fuga de datos, continuidad del negocio, cumplimiento normativo, etc." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="securityPolicies" class="form-label">4. ¿Existen políticas y procedimientos de seguridad de la información documentados y en vigor?</label>
+                    <select id="securityPolicies" name="securityPolicies" class="form-select" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                        <option value="En Proceso">En Proceso</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="securityTraining" class="form-label">5. ¿Se realizan capacitaciones periódicas a los empleados sobre ciberseguridad y concientización de riesgos?</label>
+                    <select id="securityTraining" name="securityTraining" class="form-select" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                        <option value="Ocasionalmente">Ocasionalmente</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Sección 4: Objetivos y Expectativas de la Auditoría -->
+            <section class="mb-10 p-6 bg-gray-50 rounded-lg shadow-inner">
+                <h2 class="form-section-title">Sección 4: Objetivos y Expectativas de la Auditoría</h2>
+
+                <div class="form-group">
+                    <label for="auditObjective" class="form-label">1. ¿Cuál es el objetivo principal de esta auditoría de evaluación de riesgos tecnológicos?</label>
+                    <textarea id="auditObjective" name="auditObjective" class="form-textarea" placeholder="Ej. Identificar vulnerabilidades, cumplir con regulaciones, mejorar la postura de seguridad, obtener una visión independiente, etc." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="focusedAreas" class="form-label">2. ¿Hay áreas o sistemas específicos que les gustaría que se enfocaran prioritariamente en la auditoría?</label>
+                    <textarea id="focusedAreas" name="focusedAreas" class="form-textarea"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="expectedDeliverables" class="form-label">3. ¿Qué tipo de entregables esperan de esta auditoría?</label>
+                    <textarea id="expectedDeliverables" name="expectedDeliverables" class="form-textarea" placeholder="Ej. Informe de hallazgos, plan de acción recomendado, presentación a la gerencia/directiva, etc." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="howResultsUsed" class="form-label">4. ¿Cómo planean utilizar los resultados de esta auditoría?</label>
+                    <textarea id="howResultsUsed" name="howResultsUsed" class="form-textarea" required></textarea>
+                </div>
+            </section>
+
+            <!-- Sección 5: Consideraciones Adicionales -->
+            <section class="mb-10 p-6 bg-gray-50 rounded-lg shadow-inner">
+                <h2 class="form-section-title">Sección 5: Consideraciones Adicionales</h2>
+
+                <div class="form-group">
+                    <label for="deadline" class="form-label">1. ¿Existe alguna fecha límite o cronograma deseado para la realización de esta auditoría?</label>
+                    <input type="text" id="deadline" name="deadline" class="form-input" placeholder="Ej. Antes de fin de año, Q3 2025, etc.">
+                </div>
+
+                <div class="form-group">
+                    <label for="budget" class="form-label">2. ¿Tienen un presupuesto estimado o un rango de inversión para este proyecto? (Opcional)</label>
+                    <input type="text" id="budget" name="budget" class="form-input" placeholder="Ej. B/. 20,000 - B/. 30,000 USD">
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalInfo" class="form-label">3. ¿Hay alguna otra información o consideración que considere relevante para la elaboración de nuestra propuesta?</label>
+                    <textarea id="additionalInfo" name="additionalInfo" class="form-textarea"></textarea>
+                </div>
+            </section>
+
+            <div class="text-center">
+                <button type="submit" class="form-button">Enviar Cuestionario y Generar PDF</button>
+            </div>
+        </form>
+
+        <!-- Mensaje de confirmación/error -->
+        <div id="messageBox" class="hidden mt-8 p-4 rounded-lg text-center" role="alert"></div>
+
+        <!-- Derechos Reservados -->
+        <div class="mt-12 pt-6 border-t border-gray-300 text-center text-sm text-gray-500">
+            <p>&copy; 2025 Solutions Group. Todos los derechos reservados.</p>
+            <p>Este documento es propiedad de Solutions Group y no deberá ser compartido sin la debida autorización.</p>
+        </div>
+
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault(); // Evita el envío tradicional del formulario
+
+            const form = document.getElementById('riskAssessmentForm');
+            const messageBox = document.getElementById('messageBox');
+            let formData = {};
+
+            // Recopilar todos los datos del formulario
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                formData[input.name] = input.value;
+            });
+
+            console.log('Datos del formulario:', formData);
+
+            // Mostrar mensaje de carga
+            messageBox.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'border-green-400', 'bg-red-100', 'text-red-700', 'border-red-400');
+            messageBox.classList.add('bg-blue-100', 'text-blue-700', 'border', 'border-blue-400');
+            messageBox.innerHTML = `
+                <p class="font-bold">Generando PDF...</p>
+                <p>Por favor, espere un momento.</p>
+            `;
+
+            // Construir el contenido HTML para el PDF
+            let pdfContentHtml = `
+                <div class="pdf-content-wrapper">
+                    <div class="pdf-header">
+                        <img src="Solutions Group Logo.png-a998346b-5d9f-43db-975e-fdd33b30090f" alt="Solutions Group Logo" class="pdf-logo mx-auto">
+                        <h1>Cuestionario de Evaluación de Riesgos Tecnológicos</h1>
+                        <p>Respuestas de la Cooperativa</p>
+                    </div>
+
+                    <div class="pdf-section">
+                        <h2 class="pdf-section-title">Sección 1: Información General de la Cooperativa</h2>
+                        <p class="pdf-question">Nombre de la Cooperativa: <span class="pdf-answer">${formData.coopName || ''}</span></p>
+                        <p class="pdf-question">Tipo de Cooperativa: <span class="pdf-answer">${formData.coopType || ''}</span></p>
+                        <p class="pdf-question">Número aproximado de miembros/asociados: <span class="pdf-answer">${formData.numMembers || ''}</span></p>
+                        <p class="pdf-question">Número aproximado de empleados: <span class="pdf-answer">${formData.numEmployees || ''}</span></p>
+                        <p class="pdf-question">Número de sucursales/oficinas: <span class="pdf-answer">${formData.numBranches || ''}</span></p>
+                        <p class="pdf-question">Principales servicios que ofrece la cooperativa: <span class="pdf-answer">${formData.mainServices || ''}</span></p>
+                        <h3 class="pdf-question">Persona de Contacto Principal para la Auditoría:</h3>
+                        <p class="pdf-question">Nombre: <span class="pdf-answer">${formData.contactName || ''}</span></p>
+                        <p class="pdf-question">Cargo: <span class="pdf-answer">${formData.contactRole || ''}</span></p>
+                        <p class="pdf-question">Correo Electrónico: <span class="pdf-answer">${formData.contactEmail || ''}</span></p>
+                        <p class="pdf-question">Teléfono: <span class="pdf-answer">${formData.contactPhone || ''}</span></p>
+                    </div>
+
+                    <div class="pdf-section">
+                        <h2 class="pdf-section-title">Sección 2: Infraestructura y Sistemas Tecnológicos</h2>
+                        <p class="pdf-question">Describa brevemente su infraestructura tecnológica actual: <span class="pdf-answer">${formData.techInfra || ''}</span></p>
+                        <p class="pdf-question">Liste los sistemas y aplicaciones críticos para las operaciones de la cooperativa: <span class="pdf-answer">${formData.criticalSystems || ''}</span></p>
+                        <p class="pdf-question">¿Utilizan servicios de terceros para alguna de sus operaciones tecnológicas? Si es así, por favor, mencione los principales: <span class="pdf-answer">${formData.thirdPartyServices || ''}</span></p>
+                        <p class="pdf-question">¿Cuál es el nivel de digitalización de sus operaciones?: <span class="pdf-answer">${formData.digitalizationLevel || ''}</span></p>
+                        <p class="pdf-question">¿Disponen de un equipo de TI interno? En caso afirmativo, ¿cuántas personas lo conforman y cuáles son sus principales responsabilidades?: <span class="pdf-answer">${formData.internalITTeam || ''}</span></p>
+                    </div>
+
+                    <div class="pdf-section">
+                        <h2 class="pdf-section-title">Sección 3: Gestión de Riesgos y Ciberseguridad Actual</h2>
+                        <p class="pdf-question">¿La cooperativa cuenta actualmente con un marco o programa de gestión de riesgos tecnológicos o ciberseguridad? Si es así, ¿cuál?: <span class="pdf-answer">${formData.riskManagementFramework || ''}</span></p>
+                        <p class="pdf-question">¿Cuándo fue la última vez que se realizó una auditoría o evaluación de riesgos tecnológicos? ¿Cuáles fueron los principales hallazgos o recomendaciones?: <span class="pdf-answer">${formData.lastAudit || ''}</span></p>
+                        <p class="pdf-question">¿Cuáles considera que son las principales preocupaciones o desafíos en materia de riesgos tecnológicos para su cooperativa en este momento?: <span class="pdf-answer">${formData.mainConcerns || ''}</span></p>
+                        <p class="pdf-question">¿Existen políticas y procedimientos de seguridad de la información documentados y en vigor?: <span class="pdf-answer">${formData.securityPolicies || ''}</span></p>
+                        <p class="pdf-question">¿Se realizan capacitaciones periódicas a los empleados sobre ciberseguridad y concientización de riesgos?: <span class="pdf-answer">${formData.securityTraining || ''}</span></p>
+                    </div>
+
+                    <div class="pdf-section">
+                        <h2 class="pdf-section-title">Sección 4: Objetivos y Expectativas de la Auditoría</h2>
+                        <p class="pdf-question">¿Cuál es el objetivo principal de esta auditoría de evaluación de riesgos tecnológicos?: <span class="pdf-answer">${formData.auditObjective || ''}</span></p>
+                        <p class="pdf-question">¿Hay áreas o sistemas específicos que les gustaría que se enfocaran prioritariamente en la auditoría?: <span class="pdf-answer">${formData.focusedAreas || ''}</span></p>
+                        <p class="pdf-question">¿Qué tipo de entregables esperan de esta auditoría?: <span class="pdf-answer">${formData.expectedDeliverables || ''}</span></p>
+                        <p class="pdf-question">¿Cómo planean utilizar los resultados de esta auditoría?: <span class="pdf-answer">${formData.howResultsUsed || ''}</span></p>
+                    </div>
+
+                    <div class="pdf-section">
+                        <h2 class="pdf-section-title">Sección 5: Consideraciones Adicionales</h2>
+                        <p class="pdf-question">¿Existe alguna fecha límite o cronograma deseado para la realización de esta auditoría?: <span class="pdf-answer">${formData.deadline || ''}</span></p>
+                        <p class="pdf-question">¿Tienen un presupuesto estimado o un rango de inversión para este proyecto? (Opcional): <span class="pdf-answer">${formData.budget || ''}</span></p>
+                        <p class="pdf-question">¿Hay alguna otra información o consideración que considere relevante para la elaboración de nuestra propuesta?: <span class="pdf-answer">${formData.additionalInfo || ''}</span></p>
+                    </div>
+
+                    <div class="pdf-footer">
+                        <p>&copy; 2025 Solutions Group. Todos los derechos reservados.</p>
+                        <p>Este documento es propiedad de Solutions Group y no deberá ser compartido sin la debida autorización.</p>
+                    </div>
+                </div>
+            `;
+
+            // Crear un elemento temporal para la conversión a PDF
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pdfContentHtml;
+
+            // Opciones para html2pdf
+            const options = {
+                margin: 10,
+                filename: `Cuestionario_Riesgos_Tecnologicos_${formData.coopName.replace(/\s/g, '_') || 'Cooperativa'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Generar el PDF
+            html2pdf().from(tempDiv).set(options).save()
+                .then(() => {
+                    // Mostrar mensaje de éxito después de la generación
+                    messageBox.classList.remove('hidden', 'bg-blue-100', 'text-blue-700', 'border-blue-400');
+                    messageBox.classList.add('bg-green-100', 'text-green-700', 'border', 'border-green-400');
+                    messageBox.innerHTML = `
+                        <p class="font-bold">¡Cuestionario enviado y PDF generado con éxito!</p>
+                        <p>Gracias por su tiempo. Nos pondremos en contacto con usted en breve para discutir los próximos pasos.</p>
+                    `;
+                })
+                .catch(error => {
+                    // Mostrar mensaje de error si la generación falla
+                    messageBox.classList.remove('hidden', 'bg-blue-100', 'text-blue-700', 'border-blue-400');
+                    messageBox.classList.add('bg-red-100', 'text-red-700', 'border', 'border-red-400');
+                    messageBox.innerHTML = `
+                        <p class="font-bold">Error al generar el PDF.</p>
+                        <p>Por favor, intente de nuevo o contacte a soporte si el problema persiste.</p>
+                    `;
+                    console.error('Error generando PDF:', error);
+                });
+        }
+    </script>
+</body>
+</html>
